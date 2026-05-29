@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Wrapper to run main.py on the G1's dev board via SSH.
+# Usage: ./g1 <command> [options]
+# Example: ./g1 high-stand --yes
+#          ./g1 move --vx 0.15 --duration 2.0 --yes
+#          ./g1 wave-hand --yes
+#          ./g1 stop --yes
+
+ROBOT_HOST="192.168.123.164"
+ROBOT_USER="unitree"
+ROBOT_PASS="123"
+ROBOT_SDK="/home/unitree/Projekte/robotmanager/Server/DDS_Middleware_Server/unitree_sdk2_python"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Copy main.py to the robot before running
+sshpass -p "$ROBOT_PASS" scp -o StrictHostKeyChecking=no \
+    "$SCRIPT_DIR/main.py" "$ROBOT_USER@$ROBOT_HOST:/tmp/main.py"
+
+sshpass -p "$ROBOT_PASS" ssh -o StrictHostKeyChecking=no \
+    "$ROBOT_USER@$ROBOT_HOST" \
+    "cd /tmp && PYTHONPATH=$ROBOT_SDK python3 main.py --interface eth0 $(printf ' %q' "$@")"
+
+# After snapshot, download the images
+if [ "$1" = "snapshot" ]; then
+    echo "Downloading images..."
+    sshpass -p "$ROBOT_PASS" scp -o StrictHostKeyChecking=no \
+        "$ROBOT_USER@$ROBOT_HOST:/tmp/g1_rgb.jpg" "$SCRIPT_DIR/g1_rgb.jpg"
+    sshpass -p "$ROBOT_PASS" scp -o StrictHostKeyChecking=no \
+        "$ROBOT_USER@$ROBOT_HOST:/tmp/g1_depth.jpg" "$SCRIPT_DIR/g1_depth.jpg"
+    echo "Saved: $SCRIPT_DIR/g1_rgb.jpg  $SCRIPT_DIR/g1_depth.jpg"
+fi

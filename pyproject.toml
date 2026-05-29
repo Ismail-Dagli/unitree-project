@@ -1,0 +1,13 @@
+[project]
+name = "unitree"
+version = "0.1.0"
+description = "Python starter project for Unitree G1 control"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = ["unitree-sdk2py"]
+
+[project.scripts]
+unitree-g1 = "main:main"
+
+[tool.uv.sources]
+unitree-sdk2py = { path = "../unitree_sdk2_python", editable = true }

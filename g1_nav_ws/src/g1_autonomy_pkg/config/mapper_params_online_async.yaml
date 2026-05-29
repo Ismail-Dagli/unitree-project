@@ -1,0 +1,80 @@
+# =============================================================================
+# mapper_params_online_async.yaml
+# SLAM Toolbox configuration tuned for the Unitree G1 humanoid robot.
+#
+# Key tuning rationale:
+#   - The G1 walks at moderate speed (~0.3–0.5 m/s) with inherent body sway,
+#     so scan matching tolerances are slightly relaxed.
+#   - Minimum travel distance/angle before processing a new scan is increased
+#     to avoid over-mapping during in-place weight shifts.
+#   - The LiDAR is head-mounted, so it experiences rotational vibration;
+#     the correlation search space is widened accordingly.
+# =============================================================================
+
+slam_toolbox:
+  ros__parameters:
+
+    # ---- Solver & Plugin ----------------------------------------------------
+    solver_plugin: solver_plugins::CeresSolver
+    ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
+    ceres_preconditioner: SCHUR_JACOBI
+    ceres_trust_strategy: LEVENBERG_MARQUARDT
+    ceres_dogleg_type: TRADITIONAL_DOGLEG
+    ceres_loss_function: None
+
+    # ---- Operational mode ---------------------------------------------------
+    # online_async: processes scans in background, does not block the main loop
+    mode: mapping   # 'mapping' or 'localization'
+
+    # ---- Frame IDs ----------------------------------------------------------
+    odom_frame: odom
+    map_frame: map
+    base_frame: base_link
+    scan_topic: /scan
+    use_scan_matching: true
+    use_scan_barycenter: true
+
+    # ---- Map parameters -----------------------------------------------------
+    resolution: 0.05                   # 5 cm grid cells
+    map_update_interval: 3.0           # seconds between map publishes
+    max_laser_range: 12.0              # G1 LiDAR effective range
+    minimum_time_interval: 0.5         # don't process scans faster than 2 Hz
+    transform_timeout: 0.2
+    tf_buffer_duration: 30.0
+
+    # ---- Motion model / scan insertion thresholds ---------------------------
+    # A walking humanoid sways in place; require meaningful travel to add scans
+    minimum_travel_distance: 0.15      # metres
+    minimum_travel_heading: 0.15       # radians (~8.6°)
+
+    # ---- Scan matching (correlation space) ----------------------------------
+    # Slightly wider search windows to account for head-mounted LiDAR vibration
+    correlation_search_space_dimension: 0.5
+    correlation_search_space_resolution: 0.01
+    correlation_search_space_smear_deviation: 0.1
+
+    # ---- Loop closure -------------------------------------------------------
+    loop_search_space_dimension: 8.0
+    loop_search_space_resolution: 0.05
+    loop_search_space_smear_deviation: 0.03
+    loop_search_maximum_distance: 3.0
+
+    do_loop_closing: true
+    loop_match_minimum_chain_size: 10
+    loop_match_maximum_variance_coarse: 3.0
+    loop_match_minimum_response_coarse: 0.35
+    loop_match_minimum_response_fine: 0.45
+
+    # ---- Scan processing ----------------------------------------------------
+    distance_variance_penalty: 0.5
+    angle_variance_penalty: 1.0
+    fine_search_angle_offset: 0.00349   # ~0.2°
+    coarse_search_angle_offset: 0.349   # ~20°
+    coarse_angle_resolution: 0.0349     # ~2°
+    use_response_expansion: false
+
+    # ---- General ------------------------------------------------------------
+    debug_logging: false
+    throttle_scans: 1
+    enable_interactive_mode: true
+    stack_size_to_use: 40000000         # 40 MB – needed for large maps

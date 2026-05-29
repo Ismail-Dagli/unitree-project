@@ -1,0 +1,17 @@
+# Python-generated files
+__pycache__/
+**/__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.venv*/
+
+# ROS/colcon generated output
+g1_nav_ws/build/
+g1_nav_ws/install/
+g1_nav_ws/log/
