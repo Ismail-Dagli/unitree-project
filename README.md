@@ -36,19 +36,19 @@ cmake .. -DCMAKE_INSTALL_PREFIX=../install
 cmake --build . --target install
 ```
 
-## 3. Install the Unitree Python SDK
+## 3. Use the vendored Unitree Python SDK
+
+This repository vendors the official `unitree_sdk2_python` source under `vendor/unitree_sdk2_python`, so you do not need a separate sibling checkout just to run this project.
 
 ```bash
-cd ~
-git clone https://github.com/unitreerobotics/unitree_sdk2_python.git
-cd unitree_sdk2_python
+cd /path/to/unitree-project
 export CYCLONEDDS_HOME=~/cyclonedds/install
-pip3 install -e .
+pip3 install -e vendor/unitree_sdk2_python
 ```
 
 If the SDK install fails with a CycloneDDS lookup error, verify that `CYCLONEDDS_HOME` points at the `install` directory you built above.
 
-For this repository's `uv run` workflow, keep `CYCLONEDDS_HOME` exported in your shell and use Python 3.12. The `pyproject.toml` in this repo is configured to use the sibling checkout at `~/unitree_sdk2_python` as an editable dependency.
+For this repository's `uv run` workflow, keep `CYCLONEDDS_HOME` exported in your shell and use Python 3.12. The `pyproject.toml` in this repo is configured to use the vendored SDK at `vendor/unitree_sdk2_python` as an editable dependency.
 
 ## 4. Find the robot network interface
 

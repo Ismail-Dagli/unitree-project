@@ -10,4 +10,4 @@ dependencies = ["unitree-sdk2py"]
 unitree-g1 = "main:main"
 
 [tool.uv.sources]
-unitree-sdk2py = { path = "../unitree_sdk2_python", editable = true }
+unitree-sdk2py = { path = "vendor/unitree_sdk2_python", editable = true }

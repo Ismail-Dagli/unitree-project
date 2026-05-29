@@ -135,12 +135,12 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "unitree-sdk2py", editable = "../unitree_sdk2_python" }]
+requires-dist = [{ name = "unitree-sdk2py", editable = "vendor/unitree_sdk2_python" }]
 
 [[package]]
 name = "unitree-sdk2py"
 version = "1.0.1"
-source = { editable = "../unitree_sdk2_python" }
+source = { editable = "vendor/unitree_sdk2_python" }
 dependencies = [
     { name = "cyclonedds" },
     { name = "numpy" },
